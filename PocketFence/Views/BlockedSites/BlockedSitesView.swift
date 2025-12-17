@@ -156,7 +156,7 @@ struct CategoryRow: View {
 
 struct BlockedSiteRow: View {
     let site: BlockedWebsite
-    @ObservedObject var viewModel: BlockedSitesViewModel
+    @Bindable var viewModel: BlockedSitesViewModel
     
     var body: some View {
         HStack {
@@ -199,7 +199,7 @@ struct BlockedSiteRow: View {
 // MARK: - Add Blocked Site View
 
 struct AddBlockedSiteView: View {
-    @ObservedObject var viewModel: BlockedSitesViewModel
+    @Bindable var viewModel: BlockedSitesViewModel
     @Environment(\.dismiss) var dismiss
     
     @State private var domain = ""
