@@ -8,9 +8,11 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Service for collecting and managing statistics
-class StatisticsService: ObservableObject {
+@Observable
+class StatisticsService {
     static let shared = StatisticsService()
     
     private let settingsRepo = SettingsRepository.shared

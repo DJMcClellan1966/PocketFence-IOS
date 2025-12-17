@@ -8,13 +8,15 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Repository for managing time limits and quiet hours
-class TimeLimitRepository: ObservableObject {
+@Observable
+class TimeLimitRepository {
     static let shared = TimeLimitRepository()
     
-    @Published private(set) var timeLimits: [TimeLimit] = []
-    @Published private(set) var globalQuietHours: QuietHours?
+    private(set) var timeLimits: [TimeLimit] = []
+    private(set) var globalQuietHours: QuietHours?
     
     private let userDefaults = UserDefaults.standard
     private let timeLimitsKey = "pocketfence.timeLimits"

@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct TimeLimitsView: View {
-    @StateObject private var viewModel = TimeLimitsViewModel()
+    @State private var viewModel = TimeLimitsViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // Quiet Hours Section
                 Section {

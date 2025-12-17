@@ -8,13 +8,15 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Repository for managing app settings
-class SettingsRepository: ObservableObject {
+@Observable
+class SettingsRepository {
     static let shared = SettingsRepository()
     
-    @Published private(set) var settings: AppSettings
-    @Published private(set) var statistics: Statistics
+    private(set) var settings: AppSettings
+    private(set) var statistics: Statistics
     
     private let userDefaults = UserDefaults.standard
     private let settingsKey = "pocketfence.settings"

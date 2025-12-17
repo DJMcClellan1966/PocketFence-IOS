@@ -7,20 +7,21 @@
 //
 
 import Foundation
-import Combine
+import Observation
 
 /// ViewModel for the Dashboard tab
 @MainActor
-class DashboardViewModel: ObservableObject {
-    // MARK: - Published Properties
+@Observable
+class DashboardViewModel {
+    // MARK: - Properties
     
-    @Published var isProtectionEnabled = true
-    @Published var connectedDevices: [Device] = []
-    @Published var totalBlockedAttempts = 0
-    @Published var totalBlockedSites = 0
-    @Published var recentBlocks: [(domain: String, count: Int)] = []
-    @Published var isLoading = false
-    @Published var errorMessage: String?
+    var isProtectionEnabled = true
+    var connectedDevices: [Device] = []
+    var totalBlockedAttempts = 0
+    var totalBlockedSites = 0
+    var recentBlocks: [(domain: String, count: Int)] = []
+    var isLoading = false
+    var errorMessage: String?
     
     // MARK: - Dependencies
     
@@ -30,8 +31,6 @@ class DashboardViewModel: ObservableObject {
     private let blockingService = BlockingService.shared
     private let statisticsService = StatisticsService.shared
     private let networkFilter = NetworkFilterService.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     
@@ -43,24 +42,17 @@ class DashboardViewModel: ObservableObject {
     // MARK: - Setup
     
     private func setupObservers() {
-        // Observe settings changes
-        settingsRepo.$settings
-            .map { $0.isProtectionEnabled }
-            .assign(to: &$isProtectionEnabled)
-        
-        // Observe device changes
-        deviceRepo.$devices
-            .map { $0.filter { $0.isActive } }
-            .assign(to: &$connectedDevices)
-        
-        // Observe statistics changes
-        settingsRepo.$statistics
-            .sink { [weak self] stats in
-                self?.totalBlockedAttempts = stats.totalBlockedAttempts
-                self?.totalBlockedSites = stats.totalBlockedSites
-                self?.updateRecentBlocks(from: stats)
-            }
-            .store(in: &cancellables)
+        // With @Observable, changes are automatically tracked
+        // Manually update derived properties from repositories
+        updateFromRepositories()
+    }
+    
+    private func updateFromRepositories() {
+        isProtectionEnabled = settingsRepo.settings.isProtectionEnabled
+        connectedDevices = deviceRepo.devices.filter { $0.isActive }
+        totalBlockedAttempts = settingsRepo.statistics.totalBlockedAttempts
+        totalBlockedSites = settingsRepo.statistics.totalBlockedSites
+        updateRecentBlocks(from: settingsRepo.statistics)
     }
     
     // MARK: - Data Loading
@@ -74,6 +66,9 @@ class DashboardViewModel: ObservableObject {
         
         // Update statistics
         statisticsService.updateStatistics()
+        
+        // Update derived properties
+        updateFromRepositories()
         
         isLoading = false
     }

@@ -8,12 +8,14 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Repository for managing blocked websites data persistence
-class BlockedSiteRepository: ObservableObject {
+@Observable
+class BlockedSiteRepository {
     static let shared = BlockedSiteRepository()
     
-    @Published private(set) var blockedSites: [BlockedWebsite] = []
+    private(set) var blockedSites: [BlockedWebsite] = []
     
     private let userDefaults = UserDefaults.standard
     private let blockedSitesKey = "pocketfence.blockedSites"

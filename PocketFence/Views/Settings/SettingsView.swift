@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @StateObject private var viewModel = SettingsViewModel()
+    @State private var viewModel = SettingsViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // Premium Section
                 if !viewModel.isPremium {

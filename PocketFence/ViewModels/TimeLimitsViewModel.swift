@@ -7,27 +7,26 @@
 //
 
 import Foundation
-import Combine
+import Observation
 
 /// ViewModel for the Time Limits tab
 @MainActor
-class TimeLimitsViewModel: ObservableObject {
-    // MARK: - Published Properties
+@Observable
+class TimeLimitsViewModel {
+    // MARK: - Properties
     
-    @Published var timeLimits: [TimeLimit] = []
-    @Published var globalQuietHours: QuietHours?
-    @Published var devices: [Device] = []
-    @Published var selectedDevice: Device?
-    @Published var showingQuietHoursEditor = false
-    @Published var showingTimeLimitEditor = false
-    @Published var errorMessage: String?
+    var timeLimits: [TimeLimit] = []
+    var globalQuietHours: QuietHours?
+    var devices: [Device] = []
+    var selectedDevice: Device?
+    var showingQuietHoursEditor = false
+    var showingTimeLimitEditor = false
+    var errorMessage: String?
     
     // MARK: - Dependencies
     
     private let timeLimitRepo = TimeLimitRepository.shared
     private let deviceRepo = DeviceRepository.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     
@@ -39,14 +38,14 @@ class TimeLimitsViewModel: ObservableObject {
     // MARK: - Setup
     
     private func setupObservers() {
-        timeLimitRepo.$timeLimits
-            .assign(to: &$timeLimits)
-        
-        timeLimitRepo.$globalQuietHours
-            .assign(to: &$globalQuietHours)
-        
-        deviceRepo.$devices
-            .assign(to: &$devices)
+        // With @Observable, changes are automatically tracked
+        updateFromRepositories()
+    }
+    
+    private func updateFromRepositories() {
+        timeLimits = timeLimitRepo.timeLimits
+        globalQuietHours = timeLimitRepo.globalQuietHours
+        devices = deviceRepo.devices
     }
     
     // MARK: - Data Loading
@@ -55,6 +54,7 @@ class TimeLimitsViewModel: ObservableObject {
         timeLimitRepo.loadTimeLimits()
         timeLimitRepo.loadQuietHours()
         deviceRepo.loadDevices()
+        updateFromRepositories()
     }
     
     // MARK: - Time Limit Actions

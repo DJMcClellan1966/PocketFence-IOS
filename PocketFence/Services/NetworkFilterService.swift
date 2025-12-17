@@ -9,15 +9,15 @@
 import Foundation
 import NetworkExtension
 import Combine
+import Observation
 
 /// Service for managing Network Extension and traffic filtering
-class NetworkFilterService: ObservableObject {
+@Observable
+class NetworkFilterService {
     static let shared = NetworkFilterService()
     
-    @Published private(set) var isVPNActive = false
-    @Published private(set) var filterStatus: FilterStatus = .inactive
-    
-    private var statusObserver: AnyCancellable?
+    private(set) var isVPNActive = false
+    private(set) var filterStatus: FilterStatus = .inactive
     
     enum FilterStatus {
         case inactive

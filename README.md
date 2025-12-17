@@ -1,8 +1,8 @@
 # PocketFence for iOS 🛡️
 
 [![Platform](https://img.shields.io/badge/platform-iOS-blue.svg)](https://www.apple.com/ios/)
-[![Swift](https://img.shields.io/badge/Swift-5.5+-orange.svg)](https://swift.org)
-[![iOS](https://img.shields.io/badge/iOS-15.0+-green.svg)](https://www.apple.com/ios/)
+[![Swift](https://img.shields.io/badge/Swift-6.0-orange.svg)](https://swift.org)
+[![iOS](https://img.shields.io/badge/iOS-17.0+-green.svg)](https://www.apple.com/ios/)
 [![License](https://img.shields.io/badge/license-MIT-lightgrey.svg)](LICENSE)
 
 A comprehensive parental control application for iOS that provides network-level content filtering and device management through Personal Hotspot. PocketFence helps parents protect their children online by blocking harmful websites, setting time limits, and monitoring internet usage.
@@ -44,9 +44,9 @@ PocketFence features a modern SwiftUI interface with five main tabs:
 PocketFence for iOS follows modern iOS development best practices:
 
 ### Design Patterns
-- **MVVM Architecture**: SwiftUI views with ObservableObject ViewModels
-- **Repository Pattern**: Centralized data management with dedicated repositories
-- **Service Layer**: Business logic separated into focused service classes
+- **MVVM Architecture**: SwiftUI views with @Observable ViewModels (iOS 17+)
+- **Repository Pattern**: Centralized data management with @Observable repositories
+- **Service Layer**: Business logic separated into focused @Observable service classes
 - **Dependency Injection**: Shared singleton instances for cross-app state management
 
 ### Project Structure
@@ -97,11 +97,11 @@ PocketFence/
 
 ## 📋 Requirements
 
-- **iOS 15.0+**
-- **Xcode 13.0+**
-- **Swift 5.5+**
+- **iOS 17.0+**
+- **Xcode 15.0+**
+- **Swift 6.0**
 - **SwiftUI**
-- **Combine Framework**
+- **Swift Concurrency (async/await)**
 
 ### Required Capabilities
 - Network Extension

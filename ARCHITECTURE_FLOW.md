@@ -8,14 +8,15 @@ PocketFence follows modern iOS development best practices with a clear separatio
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                        SwiftUI Views                        │
+│                    SwiftUI Views (iOS 17+)                  │
 │  (Dashboard, Devices, Blocked Sites, Time Limits, Settings) │
+│              Using NavigationStack & @State                 │
 └───────────────────┬─────────────────────────────────────────┘
                     │
                     ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                        ViewModels                           │
-│              (MVVM Pattern - ObservableObject)              │
+│             (MVVM Pattern - @Observable Macro)              │
 └───────────────────┬─────────────────────────────────────────┘
                     │
         ┌───────────┼───────────┐
@@ -23,38 +24,45 @@ PocketFence follows modern iOS development best practices with a clear separatio
 ┌──────────┐  ┌──────────┐  ┌──────────────┐
 │Services  │  │Repository│  │    Models    │
 │  Layer   │  │  Layer   │  │  (Data)      │
+│@Observable│ │@Observable│  │              │
 └─────┬────┘  └────┬─────┘  └──────────────┘
       │            │
       ▼            ▼
 ┌──────────────────────────┐
 │   Network Extension      │
-│  (Packet Tunnel)         │
+│  (Complete DNS Filter)   │
 └──────────────────────────┘
 ```
 
 ## 🏗️ Design Patterns
 
-### 1. MVVM (Model-View-ViewModel)
+### 1. MVVM (Model-View-ViewModel) - iOS 17+ @Observable Pattern
 
 **Why MVVM?**
 - Native to SwiftUI's declarative approach
 - Clear separation between UI and business logic
 - Testable business logic
-- Reactive data binding with Combine
+- Automatic observation with @Observable macro (iOS 17+)
 
 **Implementation:**
-- **Views**: SwiftUI views (purely declarative)
-- **ViewModels**: ObservableObject classes with @Published properties
+- **Views**: SwiftUI views with NavigationStack (purely declarative)
+- **ViewModels**: @Observable classes with automatic property tracking
 - **Models**: Plain Swift structs (Codable, Identifiable)
 
-**Example Flow:**
+**Modern iOS 17+ Flow:**
 ```swift
-View (@StateObject) → ViewModel (@Published) → Repository → Service
-     ↑                                                           │
-     └───────────────── Updates ─────────────────────────────────┘
+View (@State) → ViewModel (@Observable) → Repository (@Observable) → Service
+     ↑                                                                    │
+     └───────────────── Automatic Updates ────────────────────────────────┘
 ```
 
-### 2. Repository Pattern
+**Key Changes from ObservableObject:**
+- No more `@Published` property wrappers
+- Use `@State` instead of `@StateObject` in views
+- Automatic change tracking without Combine
+- Better performance with fine-grained observation
+
+### 2. Repository Pattern - @Observable
 
 **Purpose**: Centralize data access and management
 
@@ -70,10 +78,11 @@ View (@StateObject) → ViewModel (@Published) → Repository → Service
 - `TimeLimitRepository`: Time limits and quiet hours
 - `SettingsRepository`: App settings and statistics
 
-**Pattern:**
+**Modern iOS 17+ Pattern:**
 ```swift
-class DeviceRepository: ObservableObject {
-    @Published private(set) var devices: [Device] = []
+@Observable
+class DeviceRepository {
+    private(set) var devices: [Device] = []
     
     func loadDevices() { /* UserDefaults */ }
     func saveDevices() { /* UserDefaults */ }

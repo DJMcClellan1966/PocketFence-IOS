@@ -1,12 +1,33 @@
 import Foundation
 import NetworkExtension
-import os.log
+import os
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
-    private let logger = OSLog(subsystem: "com.pocketfence.app", category: "PacketTunnel")
+    private let logger = Logger(subsystem: "com.pocketfence.app", category: "PacketTunnel")
+    private var blockedDomains: Set<String> = []
+    private var appGroupDefaults: UserDefaults?
+    
+    override init() {
+        super.init()
+        self.appGroupDefaults = UserDefaults(suiteName: "group.com.pocketfence.ios")
+        loadBlockedDomains()
+    }
+    
+    // MARK: - Blocked Domains
+    
+    // Load blocked domains from App Group
+    private func loadBlockedDomains() {
+        if let domains = appGroupDefaults?.array(forKey: "blockedDomains") as? [String] {
+            blockedDomains = Set(domains)
+            logger.info("Loaded \(domains.count) blocked domains")
+        }
+    }
     
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
-        os_log("Starting tunnel", log: logger, type: .info)
+        logger.info("Starting PocketFence tunnel")
+        
+        // Reload blocked domains
+        loadBlockedDomains()
         
         let tunnelNetworkSettings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
         
@@ -15,105 +36,134 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         ipv4Settings.includedRoutes = [NEIPv4Route.default()]
         tunnelNetworkSettings.ipv4Settings = ipv4Settings
         
-        // Configure DNS settings
+        // Configure DNS settings - route through our filter
         let dnsSettings = NEDNSSettings(servers: ["8.8.8.8", "8.8.4.4"])
+        dnsSettings.matchDomains = [""] // Match all domains
         tunnelNetworkSettings.dnsSettings = dnsSettings
         
-        setTunnelNetworkSettings(tunnelNetworkSettings) { error in
+        setTunnelNetworkSettings(tunnelNetworkSettings) { [weak self] error in
             if let error = error {
-                os_log("Failed to set tunnel network settings: %{public}@", log: self.logger, type: .error, error.localizedDescription)
+                self?.logger.error("Failed to set tunnel network settings: \(error.localizedDescription)")
                 completionHandler(error)
             } else {
-                os_log("Tunnel network settings applied successfully", log: self.logger, type: .info)
+                self?.logger.info("Tunnel network settings applied successfully")
+                self?.startPacketProcessing()
                 completionHandler(nil)
             }
         }
     }
     
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        os_log("Stopping tunnel with reason: %{public}@", log: logger, type: .info, reason.rawValue)
+        logger.info("Stopping tunnel with reason: \(reason.rawValue)")
         completionHandler()
     }
     
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        os_log("Received app message", log: logger, type: .info)
+        logger.info("Received app message")
+        
+        // Handle reload command
+        if let message = try? JSONDecoder().decode([String: String].self, from: messageData),
+           message["command"] == "reload" {
+            loadBlockedDomains()
+        }
+        
         completionHandler?(nil)
     }
-    
-    override func sleep(completionHandler: @escaping () -> Void) {
-        os_log("Tunnel going to sleep", log: logger, type: .info)
-        completionHandler()
-    }
-    
-    override func wake() {
-        os_log("Tunnel waking up", log: logger, type: .info)
-    }
-}
 
-// MARK: - Packet Handling
-extension PacketTunnelProvider {
+    // MARK: - Packet Processing
+    
     private func startPacketProcessing() {
-        self.packetFlow.readPackets { packets, protocols in
-            // Process packets here
-            self.filterPackets(packets: packets, protocols: protocols)
+        packetFlow.readPackets { [weak self] packets, protocols in
+            guard let self = self else { return }
             
-            // Continue reading packets
+            self.filterPackets(packets: packets, protocols: protocols)
             self.startPacketProcessing()
         }
     }
     
     private func filterPackets(packets: [Data], protocols: [NSNumber]) {
-        // Implement packet filtering logic
         var filteredPackets: [Data] = []
         var filteredProtocols: [NSNumber] = []
         
         for (index, packet) in packets.enumerated() {
-            // Add your filtering logic here
-            // For now, we'll just pass through all packets
-            filteredPackets.append(packet)
-            filteredProtocols.append(protocols[index])
+            if shouldAllowPacket(packet) {
+                filteredPackets.append(packet)
+                filteredProtocols.append(protocols[index])
+            } else {
+                recordBlockedAttempt()
+            }
         }
         
-        // Write filtered packets back
         if !filteredPackets.isEmpty {
-            self.packetFlow.writePackets(filteredPackets, withProtocols: filteredProtocols)
+            packetFlow.writePackets(filteredPackets, withProtocols: filteredProtocols)
         }
     }
-}
-
-// MARK: - Network Analysis
-extension PacketTunnelProvider {
-    private func analyzePacket(_ packet: Data) -> Bool {
-        // Implement packet analysis
-        // Return true if packet should be allowed, false if it should be blocked
+    
+    private func shouldAllowPacket(_ packet: Data) -> Bool {
+        // Basic DNS packet analysis
+        guard packet.count > 12 else { return true }
+        
+        // Extract domain from DNS query (simplified)
+        if let domain = extractDomainFromDNSPacket(packet) {
+            let isBlocked = isDomainBlocked(domain)
+            if isBlocked {
+                logger.info("Blocked domain: \(domain)")
+            }
+            return !isBlocked
+        }
+        
         return true
     }
     
-    private func logBlockedPacket(_ packet: Data) {
-        os_log("Blocked packet of size: %d", log: logger, type: .info, packet.count)
-    }
-}
-
-// MARK: - Configuration
-extension PacketTunnelProvider {
-    private func loadFilterRules() {
-        // Load filtering rules from shared container or UserDefaults
-        os_log("Loading filter rules", log: logger, type: .info)
+    private func extractDomainFromDNSPacket(_ packet: Data) -> String? {
+        // Simplified DNS parsing - in production use proper DNS library
+        guard packet.count > 20 else { return nil }
+        
+        var domain = ""
+        var index = 12
+        
+        while index < packet.count && index < 256 {
+            let length = Int(packet[index])
+            guard length > 0 && length < 64 else { break }
+            
+            index += 1
+            guard index + length <= packet.count else { break }
+            
+            if !domain.isEmpty {
+                domain += "."
+            }
+            
+            if let part = String(data: packet[index..<index+length], encoding: .ascii) {
+                domain += part
+            }
+            
+            index += length
+        }
+        
+        return domain.isEmpty ? nil : domain
     }
     
-    private func saveFilterRules() {
-        // Save filtering rules to shared container or UserDefaults
-        os_log("Saving filter rules", log: logger, type: .info)
+    private func isDomainBlocked(_ domain: String) -> Bool {
+        let normalizedDomain = domain.lowercased()
+        
+        // Check exact match
+        if blockedDomains.contains(normalizedDomain) {
+            return true
+        }
+        
+        // Check if any blocked domain is a suffix (subdomain blocking)
+        return blockedDomains.contains { blockedDomain in
+            normalizedDomain.hasSuffix("." + blockedDomain) || normalizedDomain == blockedDomain
+        }
+    }
+    
+    private func recordBlockedAttempt() {
+        guard let defaults = appGroupDefaults else { return }
+        
+        let currentCount = defaults.integer(forKey: "totalBlockedAttempts")
+        defaults.set(currentCount + 1, forKey: "totalBlockedAttempts")
+        defaults.synchronize()
     }
 }
 
-// MARK: - Communication with Main App
-extension PacketTunnelProvider {
-    private func notifyMainApp(message: String) {
-        guard let data = message.data(using: .utf8) else { return }
-        
-        // This would typically be called from the main app to the tunnel
-        // For reverse communication, use CFNotificationCenter or shared container
-        os_log("Would notify main app: %{public}@", log: logger, type: .info, message)
-    }
-}
+

@@ -9,11 +9,11 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @StateObject private var viewModel = DashboardViewModel()
-    @StateObject private var adService = AdService.shared
+    @State private var viewModel = DashboardViewModel()
+    @State private var adService = AdService.shared
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
                     // Protection Status Card

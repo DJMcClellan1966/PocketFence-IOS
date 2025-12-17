@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct DevicesView: View {
-    @StateObject private var viewModel = DevicesViewModel()
+    @State private var viewModel = DevicesViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // Active Devices Section
                 if !viewModel.activeDevices.isEmpty {

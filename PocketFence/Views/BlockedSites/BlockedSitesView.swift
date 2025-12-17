@@ -9,10 +9,10 @@
 import SwiftUI
 
 struct BlockedSitesView: View {
-    @StateObject private var viewModel = BlockedSitesViewModel()
+    @State private var viewModel = BlockedSitesViewModel()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             List {
                 // Categories Section
                 Section("Block by Category") {
