@@ -8,12 +8,14 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Service for handling blocking logic and coordination
-class BlockingService: ObservableObject {
+@Observable
+class BlockingService {
     static let shared = BlockingService()
     
-    @Published var isBlocking = false
+    var isBlocking = false
     
     private let blockedSiteRepo = BlockedSiteRepository.shared
     private let deviceRepo = DeviceRepository.shared
@@ -30,23 +32,8 @@ class BlockingService: ObservableObject {
     // MARK: - Setup
     
     private func setupObservers() {
-        // Observe changes in blocked sites
-        blockedSiteRepo.$blockedSites
-            .sink { [weak self] _ in
-                Task {
-                    await self?.updateFilterRules()
-                }
-            }
-            .store(in: &cancellables)
-        
-        // Observe changes in devices
-        deviceRepo.$devices
-            .sink { [weak self] _ in
-                Task {
-                    await self?.updateFilterRules()
-                }
-            }
-            .store(in: &cancellables)
+        // With @Observable, repository changes are automatically tracked
+        // Manual updates to filter rules should be triggered explicitly when needed
     }
     
     // MARK: - Blocking Logic

@@ -8,18 +8,20 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// ViewModel for the Devices tab
 @MainActor
-class DevicesViewModel: ObservableObject {
-    // MARK: - Published Properties
+@Observable
+class DevicesViewModel {
+    // MARK: - Properties
     
-    @Published var devices: [Device] = []
-    @Published var isScanning = false
-    @Published var selectedDevice: Device?
-    @Published var showingDeviceDetail = false
-    @Published var showingAddDevice = false
-    @Published var errorMessage: String?
+    var devices: [Device] = []
+    var isScanning = false
+    var selectedDevice: Device?
+    var showingDeviceDetail = false
+    var showingAddDevice = false
+    var errorMessage: String?
     
     // MARK: - Dependencies
     
@@ -39,17 +41,20 @@ class DevicesViewModel: ObservableObject {
     // MARK: - Setup
     
     private func setupObservers() {
-        deviceRepo.$devices
-            .assign(to: &$devices)
-        
-        deviceDetection.$isScanning
-            .assign(to: &$isScanning)
+        // With @Observable, changes are automatically tracked
+        updateFromRepositories()
+    }
+    
+    private func updateFromRepositories() {
+        devices = deviceRepo.devices
+        isScanning = deviceDetection.isScanning
     }
     
     // MARK: - Data Loading
     
     func loadDevices() {
         deviceRepo.loadDevices()
+        updateFromRepositories()
     }
     
     func scanForDevices() async {

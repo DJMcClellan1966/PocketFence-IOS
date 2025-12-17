@@ -9,13 +9,15 @@
 import Foundation
 import Network
 import Combine
+import Observation
 
 /// Service for detecting devices connected to Personal Hotspot
-class DeviceDetectionService: ObservableObject {
+@Observable
+class DeviceDetectionService {
     static let shared = DeviceDetectionService()
     
-    @Published private(set) var detectedDevices: [Device] = []
-    @Published private(set) var isScanning = false
+    private(set) var detectedDevices: [Device] = []
+    private(set) var isScanning = false
     
     private var scanTimer: Timer?
     private let monitor = NWPathMonitor()

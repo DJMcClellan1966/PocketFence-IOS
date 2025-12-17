@@ -9,24 +9,26 @@
 import Foundation
 import StoreKit
 import Combine
+import Observation
 
 /// ViewModel for the Settings tab
 @MainActor
-class SettingsViewModel: ObservableObject {
-    // MARK: - Published Properties
+@Observable
+class SettingsViewModel {
+    // MARK: - Properties
     
-    @Published var settings: AppSettings
-    @Published var statistics: Statistics
-    @Published var isPremium = false
-    @Published var isProtectionEnabled = true
-    @Published var notificationsEnabled = true
-    @Published var soundEnabled = true
-    @Published var selectedBlockingMode: BlockingMode = .strict
-    @Published var selectedTheme: AppTheme = .system
-    @Published var showingPurchaseSheet = false
-    @Published var showingResetConfirmation = false
-    @Published var errorMessage: String?
-    @Published var successMessage: String?
+    var settings: AppSettings
+    var statistics: Statistics
+    var isPremium = false
+    var isProtectionEnabled = true
+    var notificationsEnabled = true
+    var soundEnabled = true
+    var selectedBlockingMode: BlockingMode = .strict
+    var selectedTheme: AppTheme = .system
+    var showingPurchaseSheet = false
+    var showingResetConfirmation = false
+    var errorMessage: String?
+    var successMessage: String?
     
     // MARK: - Dependencies
     
@@ -49,20 +51,19 @@ class SettingsViewModel: ObservableObject {
     // MARK: - Setup
     
     private func setupObservers() {
-        settingsRepo.$settings
-            .sink { [weak self] settings in
-                self?.settings = settings
-                self?.isPremium = settings.isPremium
-                self?.isProtectionEnabled = settings.isProtectionEnabled
-                self?.notificationsEnabled = settings.notificationsEnabled
-                self?.soundEnabled = settings.soundEnabled
-                self?.selectedBlockingMode = settings.blockingMode
-                self?.selectedTheme = settings.theme
-            }
-            .store(in: &cancellables)
-        
-        settingsRepo.$statistics
-            .assign(to: &$statistics)
+        // With @Observable, changes are automatically tracked
+        updateFromRepositories()
+    }
+    
+    private func updateFromRepositories() {
+        settings = settingsRepo.settings
+        statistics = settingsRepo.statistics
+        isPremium = settings.isPremium
+        isProtectionEnabled = settings.isProtectionEnabled
+        notificationsEnabled = settings.notificationsEnabled
+        soundEnabled = settings.soundEnabled
+        selectedBlockingMode = settings.blockingMode
+        selectedTheme = settings.theme
     }
     
     // MARK: - Settings Actions

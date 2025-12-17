@@ -8,14 +8,16 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Service for managing AdMob advertisements
 /// Note: This is a wrapper/interface. Actual AdMob SDK integration would be done separately
-class AdService: ObservableObject {
+@Observable
+class AdService {
     static let shared = AdService()
     
-    @Published var canShowAds = true
-    @Published var isAdLoaded = false
+    var canShowAds = true
+    var isAdLoaded = false
     
     private let settingsRepo = SettingsRepository.shared
     

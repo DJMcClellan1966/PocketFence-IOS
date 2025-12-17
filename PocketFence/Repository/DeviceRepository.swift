@@ -8,12 +8,14 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// Repository for managing device data persistence
-class DeviceRepository: ObservableObject {
+@Observable
+class DeviceRepository {
     static let shared = DeviceRepository()
     
-    @Published private(set) var devices: [Device] = []
+    private(set) var devices: [Device] = []
     
     private let userDefaults = UserDefaults.standard
     private let devicesKey = "pocketfence.devices"

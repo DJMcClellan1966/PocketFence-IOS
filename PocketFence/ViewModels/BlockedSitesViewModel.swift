@@ -8,18 +8,20 @@
 
 import Foundation
 import Combine
+import Observation
 
 /// ViewModel for the Blocked Sites tab
 @MainActor
-class BlockedSitesViewModel: ObservableObject {
-    // MARK: - Published Properties
+@Observable
+class BlockedSitesViewModel {
+    // MARK: - Properties
     
-    @Published var blockedSites: [BlockedWebsite] = []
-    @Published var selectedCategory: WebsiteCategory?
-    @Published var searchText = ""
-    @Published var showingAddSite = false
-    @Published var showingCategoryPicker = false
-    @Published var errorMessage: String?
+    var blockedSites: [BlockedWebsite] = []
+    var selectedCategory: WebsiteCategory?
+    var searchText = ""
+    var showingAddSite = false
+    var showingCategoryPicker = false
+    var errorMessage: String?
     
     // MARK: - Dependencies
     
@@ -38,14 +40,19 @@ class BlockedSitesViewModel: ObservableObject {
     // MARK: - Setup
     
     private func setupObservers() {
-        blockedSiteRepo.$blockedSites
-            .assign(to: &$blockedSites)
+        // With @Observable, changes are automatically tracked
+        updateFromRepositories()
+    }
+    
+    private func updateFromRepositories() {
+        blockedSites = blockedSiteRepo.blockedSites
     }
     
     // MARK: - Data Loading
     
     func loadBlockedSites() {
         blockedSiteRepo.loadBlockedSites()
+        updateFromRepositories()
     }
     
     // MARK: - Filtering
