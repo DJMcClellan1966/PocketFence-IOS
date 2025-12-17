@@ -5,10 +5,11 @@ This guide will help you get PocketFence up and running on your iOS device in ju
 ## Prerequisites
 
 Before you begin, make sure you have:
-- ✅ Xcode 13.0 or later installed
-- ✅ A physical iOS device running iOS 15.0 or later
+- ✅ Xcode 15.0 or later installed
+- ✅ A physical iOS device running iOS 17.0 or later
 - ✅ An Apple Developer account (for device testing)
 - ✅ Basic knowledge of Xcode and iOS development
+- ✅ Swift 6.0 support
 
 **⚠️ Important**: Network Extensions do not work in the iOS Simulator. You must use a physical device.
 

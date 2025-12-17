@@ -127,25 +127,26 @@ Pure Swift structs conforming to:
 - `Equatable` - For comparison
 
 #### 2. ViewModels (Logic Layer)
-ObservableObject classes with:
-- `@Published` properties for reactive UI
+@Observable classes with:
+- Automatic property observation (iOS 17+)
 - Business logic methods
 - Repository/Service coordination
 
 #### 3. Views (Presentation Layer)
 SwiftUI views with:
 - Declarative UI
-- `@StateObject` for ViewModels
+- `@State` for @Observable objects
+- NavigationStack (iOS 17+)
 - Minimal logic
 
 #### 4. Services (Business Layer)
-Singleton classes handling:
+@Observable singleton classes handling:
 - Complex operations
 - External integrations
 - Background tasks
 
 #### 5. Repositories (Data Layer)
-Singleton classes managing:
+@Observable singleton classes managing:
 - Data persistence
 - CRUD operations
 - Data consistency
@@ -195,9 +196,11 @@ Packet tunnel provider:
 
 ## 📱 iOS Version Support
 
-- **Minimum**: iOS 15.0
-- **Target**: iOS 15.0+
-- **Tested**: Ready for iOS 15-17
+- **Minimum**: iOS 17.0
+- **Target**: iOS 17.0+
+- **Swift**: 6.0
+- **Xcode**: 15.0+
+- **Tested**: Ready for iOS 17+
 - **Swift**: 5.5+
 
 ## 🔧 Required Configuration
