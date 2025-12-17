@@ -1,145 +1,119 @@
-//
-//  PacketTunnelProvider.swift
-//  PocketFence Network Extension
-//
-//  Created on 2025
-//  Copyright © 2025 PocketFence. All rights reserved.
-//
-
 import Foundation
 import NetworkExtension
 import os.log
 
-/// Packet Tunnel Provider for filtering network traffic
 class PacketTunnelProvider: NEPacketTunnelProvider {
-    
-    private let log = OSLog(subsystem: "com.pocketfence.ios.NetworkExtension", category: "PacketTunnel")
-    
-    private var blockedDomains: Set<String> = []
-    private var blockedIPs: Set<String> = []
-    
-    // MARK: - Lifecycle
+    private let logger = OSLog(subsystem: "com.pocketfence.app", category: "PacketTunnel")
     
     override func startTunnel(options: [String : NSObject]?, completionHandler: @escaping (Error?) -> Void) {
-        os_log("Starting PocketFence tunnel", log: log, type: .info)
+        os_log("Starting tunnel", log: logger, type: .info)
         
-        // Load blocked domains and IPs from shared UserDefaults
-        loadBlockingRules()
+        let tunnelNetworkSettings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
         
-        // Configure tunnel settings
-        let tunnelNetworkSettings = createTunnelSettings()
+        // Configure IPv4 settings
+        let ipv4Settings = NEIPv4Settings(addresses: ["192.168.1.2"], subnetMasks: ["255.255.255.0"])
+        ipv4Settings.includedRoutes = [NEIPv4Route.default()]
+        tunnelNetworkSettings.ipv4Settings = ipv4Settings
         
-        setTunnelNetworkSettings(tunnelNetworkSettings) { [weak self] error in
+        // Configure DNS settings
+        let dnsSettings = NEDNSSettings(servers: ["8.8.8.8", "8.8.4.4"])
+        tunnelNetworkSettings.dnsSettings = dnsSettings
+        
+        setTunnelNetworkSettings(tunnelNetworkSettings) { error in
             if let error = error {
-                os_log("Failed to set tunnel settings: %{public}@", log: self?.log ?? OSLog.default, type: .error, error.localizedDescription)
+                os_log("Failed to set tunnel network settings: %{public}@", log: self.logger, type: .error, error.localizedDescription)
                 completionHandler(error)
-                return
+            } else {
+                os_log("Tunnel network settings applied successfully", log: self.logger, type: .info)
+                completionHandler(nil)
             }
-            
-            os_log("PocketFence tunnel started successfully", log: self?.log ?? OSLog.default, type: .info)
-            completionHandler(nil)
         }
     }
     
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        os_log("Stopping PocketFence tunnel: %d", log: log, type: .info, reason.rawValue)
+        os_log("Stopping tunnel with reason: %{public}@", log: logger, type: .info, reason.rawValue)
         completionHandler()
     }
     
     override func handleAppMessage(_ messageData: Data, completionHandler: ((Data?) -> Void)?) {
-        // Handle messages from main app
-        os_log("Received app message", log: log, type: .debug)
-        
-        // Reload blocking rules when app sends update
-        loadBlockingRules()
-        
+        os_log("Received app message", log: logger, type: .info)
         completionHandler?(nil)
     }
     
-    // MARK: - Configuration
-    
-    private func createTunnelSettings() -> NEPacketTunnelNetworkSettings {
-        let settings = NEPacketTunnelNetworkSettings(tunnelRemoteAddress: "127.0.0.1")
-        
-        // IPv4 settings
-        let ipv4Settings = NEIPv4Settings(addresses: ["172.16.0.1"], subnetMasks: ["255.255.255.0"])
-        ipv4Settings.includedRoutes = [NEIPv4Route.default()]
-        settings.ipv4Settings = ipv4Settings
-        
-        // DNS settings - route DNS through our tunnel
-        let dnsSettings = NEDNSSettings(servers: ["8.8.8.8", "8.8.4.4"])
-        dnsSettings.matchDomains = [""] // Match all domains
-        settings.dnsSettings = dnsSettings
-        
-        // MTU
-        settings.mtu = 1500
-        
-        return settings
+    override func sleep(completionHandler: @escaping () -> Void) {
+        os_log("Tunnel going to sleep", log: logger, type: .info)
+        completionHandler()
     }
     
-    // MARK: - Blocking Rules
-    
-    private func loadBlockingRules() {
-        let appGroupId = "group.com.pocketfence.ios"
-        guard let userDefaults = UserDefaults(suiteName: appGroupId) else {
-            os_log("Failed to access shared UserDefaults", log: log, type: .error)
-            return
-        }
-        
-        // Load blocked domains
-        if let domains = userDefaults.array(forKey: "blockedDomains") as? [String] {
-            blockedDomains = Set(domains.map { $0.lowercased() })
-            os_log("Loaded %d blocked domains", log: log, type: .info, blockedDomains.count)
-        }
-        
-        // Load blocked IPs
-        if let ips = userDefaults.array(forKey: "blockedIPs") as? [String] {
-            blockedIPs = Set(ips)
-            os_log("Loaded %d blocked IPs", log: log, type: .info, blockedIPs.count)
+    override func wake() {
+        os_log("Tunnel waking up", log: logger, type: .info)
+    }
+}
+
+// MARK: - Packet Handling
+extension PacketTunnelProvider {
+    private func startPacketProcessing() {
+        self.packetFlow.readPackets { packets, protocols in
+            // Process packets here
+            self.filterPackets(packets: packets, protocols: protocols)
+            
+            // Continue reading packets
+            self.startPacketProcessing()
         }
     }
     
-    // MARK: - DNS Filtering (Conceptual)
-    
-    /// Check if a domain should be blocked
-    private func shouldBlockDomain(_ domain: String) -> Bool {
-        let normalizedDomain = domain.lowercased()
+    private func filterPackets(packets: [Data], protocols: [NSNumber]) {
+        // Implement packet filtering logic
+        var filteredPackets: [Data] = []
+        var filteredProtocols: [NSNumber] = []
         
-        // Check exact match
-        if blockedDomains.contains(normalizedDomain) {
-            return true
+        for (index, packet) in packets.enumerated() {
+            // Add your filtering logic here
+            // For now, we'll just pass through all packets
+            filteredPackets.append(packet)
+            filteredProtocols.append(protocols[index])
         }
         
-        // Check if it's a subdomain of a blocked domain
-        for blockedDomain in blockedDomains {
-            if normalizedDomain.hasSuffix(".\(blockedDomain)") {
-                return true
-            }
+        // Write filtered packets back
+        if !filteredPackets.isEmpty {
+            self.packetFlow.writePackets(filteredPackets, withProtocols: filteredProtocols)
         }
-        
-        return false
+    }
+}
+
+// MARK: - Network Analysis
+extension PacketTunnelProvider {
+    private func analyzePacket(_ packet: Data) -> Bool {
+        // Implement packet analysis
+        // Return true if packet should be allowed, false if it should be blocked
+        return true
     }
     
-    /// Check if an IP should be blocked
-    private func shouldBlockIP(_ ip: String) -> Bool {
-        return blockedIPs.contains(ip)
+    private func logBlockedPacket(_ packet: Data) {
+        os_log("Blocked packet of size: %d", log: logger, type: .info, packet.count)
+    }
+}
+
+// MARK: - Configuration
+extension PacketTunnelProvider {
+    private func loadFilterRules() {
+        // Load filtering rules from shared container or UserDefaults
+        os_log("Loading filter rules", log: logger, type: .info)
     }
     
-    // MARK: - Statistics
-    
-    private func recordBlockedAttempt(domain: String) {
-        // In a full implementation, this would:
-        // 1. Increment counters in shared storage
-        // 2. Notify main app
-        // 3. Log for statistics
+    private func saveFilterRules() {
+        // Save filtering rules to shared container or UserDefaults
+        os_log("Saving filter rules", log: logger, type: .info)
+    }
+}
+
+// MARK: - Communication with Main App
+extension PacketTunnelProvider {
+    private func notifyMainApp(message: String) {
+        guard let data = message.data(using: .utf8) else { return }
         
-        os_log("Blocked: %{public}@", log: log, type: .info, domain)
-        
-        let appGroupId = "group.com.pocketfence.ios"
-        guard let userDefaults = UserDefaults(suiteName: appGroupId) else { return }
-        
-        let key = "totalBlockedAttempts"
-        let count = userDefaults.integer(forKey: key)
-        userDefaults.set(count + 1, forKey: key)
+        // This would typically be called from the main app to the tunnel
+        // For reverse communication, use CFNotificationCenter or shared container
+        os_log("Would notify main app: %{public}@", log: logger, type: .info, message)
     }
 }
