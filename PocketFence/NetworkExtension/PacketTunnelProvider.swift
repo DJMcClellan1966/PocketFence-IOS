@@ -10,7 +10,7 @@ import Foundation
 import NetworkExtension
 import os.log
 
-/// Packet Tunnelrovider for filtering network traffic
+/// Packet Tunnel Provider for filtering network traffic
 class PacketTunnelProvider: NEPacketTunnelProvider {
     
     private let log = OSLog(subsystem: "com.pocketfence.ios.NetworkExtension", category: "PacketTunnel")
@@ -42,7 +42,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     }
     
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        os_log("Stopping PocketFence tunnel: %{public}@", log: log, type: .info, reason.rawValue)
+        os_log("Stopping PocketFence tunnel: %d", log: log, type: .info, reason.rawValue)
         completionHandler()
     }
     
@@ -141,56 +141,5 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
         let key = "totalBlockedAttempts"
         let count = userDefaults.integer(forKey: key)
         userDefaults.set(count + 1, forKey: key)
-    }
-}
-
-// MARK: - DNS Filter Provider (Alternative Approach)
-
-/// Alternative implementation using NEDNSProxyProvider for DNS-level filtering
-/// This would be in a separate target if using DNS Proxy approach
-class DNSFilterProvider: NEDNSProxyProvider {
-    
-    private let log = OSLog(subsystem: "com.pocketfence.ios.DNSFilter", category: "DNS")
-    private var blockedDomains: Set<String> = []
-    
-    override func startProxy(options: [String : Any]?, completionHandler: @escaping (Error?) -> Void) {
-        os_log("Starting DNS proxy", log: log, type: .info)
-        
-        loadBlockedDomains()
-        completionHandler(nil)
-    }
-    
-    override func stopProxy(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        os_log("Stopping DNS proxy", log: log, type: .info)
-        completionHandler()
-    }
-    
-    override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        // Handle DNS queries
-        if let dnsFlow = flow as? NEAppProxyUDPFlow {
-            // Process DNS query
-            return handleDNSQuery(dnsFlow)
-        }
-        return false
-    }
-    
-    private func handleDNSQuery(_ flow: NEAppProxyUDPFlow) -> Bool {
-        // In a full implementation:
-        // 1. Parse DNS query
-        // 2. Check against blocklist
-        // 3. Return NXDOMAIN for blocked domains
-        // 4. Forward allowed queries to upstream DNS
-        return true
-    }
-    
-    private func loadBlockedDomains() {
-        let appGroupId = "group.com.pocketfence.ios"
-        guard let userDefaults = UserDefaults(suiteName: appGroupId),
-              let domains = userDefaults.array(forKey: "blockedDomains") as? [String] else {
-            return
-        }
-        
-        blockedDomains = Set(domains.map { $0.lowercased() })
-        os_log("Loaded %d blocked domains", log: log, type: .info, blockedDomains.count)
     }
 }
