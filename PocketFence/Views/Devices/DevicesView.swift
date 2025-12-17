@@ -82,7 +82,7 @@ struct DevicesView: View {
 
 struct DeviceListRow: View {
     let device: Device
-    @ObservedObject var viewModel: DevicesViewModel
+    @Bindable var viewModel: DevicesViewModel
     
     var body: some View {
         Button {
@@ -161,7 +161,7 @@ struct DeviceListRow: View {
 // MARK: - Add Device View
 
 struct AddDeviceView: View {
-    @ObservedObject var viewModel: DevicesViewModel
+    @Bindable var viewModel: DevicesViewModel
     @Environment(\.dismiss) var dismiss
     
     @State private var name = ""
@@ -208,7 +208,7 @@ struct AddDeviceView: View {
 
 struct DeviceDetailView: View {
     let device: Device
-    @ObservedObject var viewModel: DevicesViewModel
+    @Bindable var viewModel: DevicesViewModel
     @Environment(\.dismiss) var dismiss
     
     @State private var editedName: String

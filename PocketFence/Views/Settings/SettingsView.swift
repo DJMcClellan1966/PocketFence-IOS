@@ -158,7 +158,7 @@ struct SettingsView: View {
 // MARK: - Premium Card
 
 struct PremiumCard: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @Bindable var viewModel: SettingsViewModel
     
     var body: some View {
         VStack(spacing: 12) {
@@ -195,7 +195,7 @@ struct PremiumCard: View {
 // MARK: - Premium Purchase View
 
 struct PremiumPurchaseView: View {
-    @ObservedObject var viewModel: SettingsViewModel
+    @Bindable var viewModel: SettingsViewModel
     @Environment(\.dismiss) var dismiss
     
     var body: some View {

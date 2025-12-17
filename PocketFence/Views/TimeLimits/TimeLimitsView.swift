@@ -110,7 +110,7 @@ struct TimeLimitsView: View {
 
 struct QuietHoursRow: View {
     let quietHours: QuietHours
-    @ObservedObject var viewModel: TimeLimitsViewModel
+    @Bindable var viewModel: TimeLimitsViewModel
     
     var body: some View {
         HStack {
@@ -169,7 +169,7 @@ struct QuietHoursRow: View {
 struct TimeLimitRow: View {
     let timeLimit: TimeLimit
     let deviceName: String
-    @ObservedObject var viewModel: TimeLimitsViewModel
+    @Bindable var viewModel: TimeLimitsViewModel
     
     var body: some View {
         HStack {
@@ -205,7 +205,7 @@ struct TimeLimitRow: View {
 struct EditTimeLimitView: View {
     let device: Device
     let timeLimit: TimeLimit
-    @ObservedObject var viewModel: TimeLimitsViewModel
+    @Bindable var viewModel: TimeLimitsViewModel
     @Environment(\.dismiss) var dismiss
     
     @State private var limitMinutes: Double
@@ -268,7 +268,7 @@ struct EditTimeLimitView: View {
 // MARK: - Quiet Hours Editor View
 
 struct QuietHoursEditorView: View {
-    @ObservedObject var viewModel: TimeLimitsViewModel
+    @Bindable var viewModel: TimeLimitsViewModel
     @Environment(\.dismiss) var dismiss
     
     @State private var startTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date())!
