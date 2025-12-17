@@ -195,10 +195,6 @@ PocketFence requests minimal entitlements:
     <string>group.com.pocketfence.ios</string>
 </array>
 
-<!-- Required for device detection -->
-<key>com.apple.developer.networking.multicast</key>
-<true/>
-
 <!-- Required for WiFi information -->
 <key>com.apple.developer.networking.wifi-info</key>
 <true/>
