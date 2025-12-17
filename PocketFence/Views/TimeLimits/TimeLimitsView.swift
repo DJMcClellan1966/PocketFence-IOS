@@ -9,7 +9,11 @@
 import SwiftUI
 
 struct TimeLimitsView: View {
-    @State private var viewModel = TimeLimitsViewModel()
+    @State private var viewModel: TimeLimitsViewModel
+    
+    init() {
+        _viewModel = State(wrappedValue: TimeLimitsViewModel())
+    }
     
     var body: some View {
         NavigationStack {

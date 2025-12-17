@@ -9,7 +9,11 @@
 import SwiftUI
 
 struct DevicesView: View {
-    @State private var viewModel = DevicesViewModel()
+    @State private var viewModel: DevicesViewModel
+    
+    init() {
+        _viewModel = State(wrappedValue: DevicesViewModel())
+    }
     
     var body: some View {
         NavigationStack {
@@ -295,8 +299,12 @@ struct DeviceDetailView: View {
         } else {
             updated.dailyTimeLimit = nil
         }
-        viewModel.updateDeviceName(updated, name: editedName)
-        viewModel.setTimeLimit(for: updated, minutes: updated.dailyTimeLimit)
+        
+        Task { @MainActor in
+            viewModel.updateDeviceName(updated, name: editedName)
+            viewModel.setTimeLimit(for: updated, minutes: updated.dailyTimeLimit)
+        }
+        
         dismiss()
     }
 }

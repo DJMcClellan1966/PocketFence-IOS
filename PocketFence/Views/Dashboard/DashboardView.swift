@@ -9,8 +9,12 @@
 import SwiftUI
 
 struct DashboardView: View {
-    @State private var viewModel = DashboardViewModel()
+    @State private var viewModel: DashboardViewModel
     @State private var adService = AdService.shared
+    
+    init() {
+        _viewModel = State(wrappedValue: DashboardViewModel())
+    }
     
     var body: some View {
         NavigationStack {
