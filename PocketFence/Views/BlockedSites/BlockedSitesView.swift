@@ -9,7 +9,11 @@
 import SwiftUI
 
 struct BlockedSitesView: View {
-    @State private var viewModel = BlockedSitesViewModel()
+    @State private var viewModel: BlockedSitesViewModel
+    
+    init() {
+        _viewModel = State(wrappedValue: BlockedSitesViewModel())
+    }
     
     var body: some View {
         NavigationStack {

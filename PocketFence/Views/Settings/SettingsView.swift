@@ -9,7 +9,11 @@
 import SwiftUI
 
 struct SettingsView: View {
-    @State private var viewModel = SettingsViewModel()
+    @State private var viewModel: SettingsViewModel
+    
+    init() {
+        _viewModel = State(wrappedValue: SettingsViewModel())
+    }
     
     var body: some View {
         NavigationStack {
