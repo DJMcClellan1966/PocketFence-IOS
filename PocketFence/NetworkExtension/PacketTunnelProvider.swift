@@ -6,10 +6,11 @@
 //  Copyright © 2025 PocketFence. All rights reserved.
 //
 
+import Foundation
 import NetworkExtension
 import os.log
 
-/// Packet Tunnel Provider for filtering network traffic
+/// Packet Tunnelrovider for filtering network traffic
 class PacketTunnelProvider: NEPacketTunnelProvider {
     
     private let log = OSLog(subsystem: "com.pocketfence.ios.NetworkExtension", category: "PacketTunnel")
@@ -41,7 +42,7 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
     }
     
     override func stopTunnel(with reason: NEProviderStopReason, completionHandler: @escaping () -> Void) {
-        os_log("Stopping PocketFence tunnel: %{public}@", log: log, type: .info, "\(reason)")
+        os_log("Stopping PocketFence tunnel: %{public}@", log: log, type: .info, reason.rawValue)
         completionHandler()
     }
     
@@ -96,15 +97,6 @@ class PacketTunnelProvider: NEPacketTunnelProvider {
             blockedIPs = Set(ips)
             os_log("Loaded %d blocked IPs", log: log, type: .info, blockedIPs.count)
         }
-    }
-    
-    // MARK: - Packet Processing
-    
-    override func handleNewFlow(_ flow: NEAppProxyFlow) -> Bool {
-        // This would be implemented for more advanced traffic filtering
-        // For DNS-based filtering, we primarily rely on DNS settings
-        os_log("New flow: %{public}@", log: log, type: .debug, flow.debugDescription)
-        return true
     }
     
     // MARK: - DNS Filtering (Conceptual)
