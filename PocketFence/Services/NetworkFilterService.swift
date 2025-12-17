@@ -19,8 +19,6 @@ class NetworkFilterService {
     private(set) var isVPNActive = false
     private(set) var filterStatus: FilterStatus = .inactive
     
-    private var statusObserver: AnyCancellable?
-    
     enum FilterStatus {
         case inactive
         case connecting

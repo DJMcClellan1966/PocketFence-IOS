@@ -1,6 +1,6 @@
 import Foundation
 import NetworkExtension
-import os.log
+import os
 
 class PacketTunnelProvider: NEPacketTunnelProvider {
     private let logger = Logger(subsystem: "com.pocketfence.app", category: "PacketTunnel")

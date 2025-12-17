@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 import Observation
 
 /// Service for handling blocking logic and coordination
@@ -22,8 +21,6 @@ class BlockingService {
     private let timeLimitRepo = TimeLimitRepository.shared
     private let settingsRepo = SettingsRepository.shared
     private let networkFilter = NetworkFilterService.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     private init() {
         setupObservers()

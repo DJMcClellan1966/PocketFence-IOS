@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 import Observation
 
 /// ViewModel for the Devices tab
@@ -28,8 +27,6 @@ class DevicesViewModel {
     private let deviceRepo = DeviceRepository.shared
     private let deviceDetection = DeviceDetectionService.shared
     private let timeLimitRepo = TimeLimitRepository.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     

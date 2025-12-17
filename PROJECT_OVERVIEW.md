@@ -201,7 +201,6 @@ Packet tunnel provider:
 - **Swift**: 6.0
 - **Xcode**: 15.0+
 - **Tested**: Ready for iOS 17+
-- **Swift**: 5.5+
 
 ## 🔧 Required Configuration
 

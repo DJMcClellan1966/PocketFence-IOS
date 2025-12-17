@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 import Observation
 
 /// ViewModel for the Blocked Sites tab
@@ -27,8 +26,6 @@ class BlockedSitesViewModel {
     
     private let blockedSiteRepo = BlockedSiteRepository.shared
     private let blockingService = BlockingService.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     

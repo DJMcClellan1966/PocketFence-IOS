@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 import Observation
 
 /// ViewModel for the Time Limits tab
@@ -28,8 +27,6 @@ class TimeLimitsViewModel {
     
     private let timeLimitRepo = TimeLimitRepository.shared
     private let deviceRepo = DeviceRepository.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     

@@ -8,7 +8,6 @@
 
 import Foundation
 import StoreKit
-import Combine
 import Observation
 
 /// ViewModel for the Settings tab
@@ -37,8 +36,6 @@ class SettingsViewModel {
     private let blockedSiteRepo = BlockedSiteRepository.shared
     private let timeLimitRepo = TimeLimitRepository.shared
     private let statisticsService = StatisticsService.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     

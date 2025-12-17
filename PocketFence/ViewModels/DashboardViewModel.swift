@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import Combine
 import Observation
 
 /// ViewModel for the Dashboard tab
@@ -32,8 +31,6 @@ class DashboardViewModel {
     private let blockingService = BlockingService.shared
     private let statisticsService = StatisticsService.shared
     private let networkFilter = NetworkFilterService.shared
-    
-    private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Initialization
     
