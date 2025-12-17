@@ -90,7 +90,7 @@
 		A1000071000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1000072000000000000001 /* PocketFence.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PocketFence.entitlements; sourceTree = "<group>"; };
 		A1000073000000000000001 /* NetworkExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NetworkExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1000074000000000000001 /* NetworkExtension-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "NetworkExtension-Info.plist"; sourceTree = "<group>"; };
+		A1000074000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A1000075000000000000001 /* NetworkExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = NetworkExtension.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -228,7 +228,7 @@
 			isa = PBXGroup;
 			children = (
 				A1000064000000000000001 /* PacketTunnelProvider.swift */,
-				A1000074000000000000001 /* NetworkExtension-Info.plist */,
+				A1000074000000000000001 /* Info.plist */,
 				A1000075000000000000001 /* NetworkExtension.entitlements */,
 			);
 			path = NetworkExtension;
@@ -652,7 +652,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = PocketFence/NetworkExtension/NetworkExtension-Info.plist;
+				INFOPLIST_FILE = PocketFence/NetworkExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
@@ -682,7 +682,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = PocketFence/NetworkExtension/NetworkExtension-Info.plist;
+				INFOPLIST_FILE = PocketFence/NetworkExtension/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = NetworkExtension;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
