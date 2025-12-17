@@ -10,7 +10,7 @@ import SwiftUI
 
 /// Main tab-based navigation view
 struct MainTabView: View {
-    @StateObject private var settingsRepo = SettingsRepository.shared
+    @State private var settingsRepo = SettingsRepository.shared
     
     var body: some View {
         TabView {

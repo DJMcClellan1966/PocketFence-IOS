@@ -12,9 +12,9 @@ import SwiftUI
 struct PocketFenceApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
-    @StateObject private var settingsRepo = SettingsRepository.shared
-    @StateObject private var deviceRepo = DeviceRepository.shared
-    @StateObject private var blockedSiteRepo = BlockedSiteRepository.shared
+    @State private var settingsRepo = SettingsRepository.shared
+    @State private var deviceRepo = DeviceRepository.shared
+    @State private var blockedSiteRepo = BlockedSiteRepository.shared
     
     var body: some Scene {
         WindowGroup {
