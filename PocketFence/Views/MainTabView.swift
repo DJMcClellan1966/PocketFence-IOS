@@ -14,10 +14,10 @@ struct MainTabView: View {
     
     var body: some View {
         TabView {
-            // New Wellness Dashboard - The star of the show
-            WellnessDashboardView()
+            // Dashboard
+            DashboardView()
                 .tabItem {
-                    Label("Wellness", systemImage: "heart.circle.fill")
+                    Label("Dashboard", systemImage: "house.fill")
                 }
             
             // Focus & Productivity
@@ -44,7 +44,7 @@ struct MainTabView: View {
                     Label("Settings", systemImage: "gear")
                 }
         }
-        .accentColor(.wellnessPrimary)
+        .accentColor(.blue)
     }
 }
 
