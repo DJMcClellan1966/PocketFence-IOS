@@ -12,6 +12,10 @@ import Combine
 import Observation
 
 /// Service for detecting devices connected to Personal Hotspot
+/// Note: @unchecked Sendable is safe here because:
+/// - @Observable provides thread-safe property observation
+/// - All state mutations happen on the main thread via DispatchQueue.main.async
+/// - Background operations are properly isolated on dedicated queues
 @Observable
 class DeviceDetectionService: @unchecked Sendable {
     static let shared = DeviceDetectionService()

@@ -173,10 +173,8 @@ class SettingsViewModel {
     
     func contactSupport() {
         let email = "support@pocketfence.app"
-        if URL(string: "mailto:\(email)") != nil {
-            // In real app: UIApplication.shared.open(url)
-            print("Opening email to: \(email)")
-        }
+        // In real app: UIApplication.shared.open(URL(string: "mailto:\(email)")!)
+        print("Opening email to: \(email)")
     }
     
     // MARK: - Computed Properties
