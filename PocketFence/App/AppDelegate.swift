@@ -9,7 +9,7 @@
 import UIKit
 import UserNotifications
 
-class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate, @unchecked Sendable {
     
     func application(_ application: UIApplication, 
                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
@@ -50,8 +50,11 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         // Parse notification type and handle accordingly
         if let notificationType = userInfo["type"] as? String {
-            Task { @MainActor in
-                await handleNotification(type: notificationType, userInfo: userInfo)
+            // Create local copies to avoid capturing mutable variables
+            let typeCopy = notificationType
+            let userInfoCopy = userInfo
+            Task { @MainActor [weak self] in
+                await self?.handleNotification(type: typeCopy, userInfo: userInfoCopy)
             }
         }
         
