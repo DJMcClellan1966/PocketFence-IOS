@@ -30,6 +30,11 @@
 		A1000041000000000000001 /* BlockingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000042000000000000001 /* BlockingService.swift */; };
 		A1000043000000000000001 /* StatisticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000044000000000000001 /* StatisticsService.swift */; };
 		A1000045000000000000001 /* AdService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000046000000000000001 /* AdService.swift */; };
+		A1000110000000000000001 /* WellnessAnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000111000000000000001 /* WellnessAnalyticsService.swift */; };
+		A1000112000000000000001 /* WellnessDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000113000000000000001 /* WellnessDashboardView.swift */; };
+		A1000114000000000000001 /* FocusSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000115000000000000001 /* FocusSession.swift */; };
+		A1000116000000000000001 /* DigitalEnergyScore.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000117000000000000001 /* DigitalEnergyScore.swift */; };
+		A1000118000000000000001 /* WellnessInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000119000000000000001 /* WellnessInsight.swift */; };
 		A1000047000000000000001 /* DeviceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000048000000000000001 /* DeviceRepository.swift */; };
 		A1000049000000000000001 /* BlockedSiteRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000050000000000000001 /* BlockedSiteRepository.swift */; };
 		A1000051000000000000001 /* TimeLimitRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000052000000000000001 /* TimeLimitRepository.swift */; };
@@ -77,6 +82,11 @@
 		A1000042000000000000001 /* BlockingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockingService.swift; sourceTree = "<group>"; };
 		A1000044000000000000001 /* StatisticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsService.swift; sourceTree = "<group>"; };
 		A1000046000000000000001 /* AdService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdService.swift; sourceTree = "<group>"; };
+		A1000111000000000000001 /* WellnessAnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WellnessAnalyticsService.swift; sourceTree = "<group>"; };
+		A1000113000000000000001 /* WellnessDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WellnessDashboardView.swift; sourceTree = "<group>"; };
+		A1000115000000000000001 /* FocusSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FocusSession.swift; sourceTree = "<group>"; };
+		A1000117000000000000001 /* DigitalEnergyScore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DigitalEnergyScore.swift; sourceTree = "<group>"; };
+		A1000119000000000000001 /* WellnessInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WellnessInsight.swift; sourceTree = "<group>"; };
 		A1000048000000000000001 /* DeviceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceRepository.swift; sourceTree = "<group>"; };
 		A1000050000000000000001 /* BlockedSiteRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlockedSiteRepository.swift; sourceTree = "<group>"; };
 		A1000052000000000000001 /* TimeLimitRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeLimitRepository.swift; sourceTree = "<group>"; };
@@ -174,6 +184,9 @@
 				A1000010000000000000001 /* TimeLimit.swift */,
 				A1000012000000000000001 /* Statistics.swift */,
 				A1000014000000000000001 /* AppSettings.swift */,
+				A1000115000000000000001 /* FocusSession.swift */,
+				A1000117000000000000001 /* DigitalEnergyScore.swift */,
+				A1000119000000000000001 /* WellnessInsight.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -211,6 +224,7 @@
 				A1000042000000000000001 /* BlockingService.swift */,
 				A1000044000000000000001 /* StatisticsService.swift */,
 				A1000046000000000000001 /* AdService.swift */,
+				A1000111000000000000001 /* WellnessAnalyticsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -260,6 +274,7 @@
 			isa = PBXGroup;
 			children = (
 				A1000028000000000000001 /* DashboardView.swift */,
+				A1000113000000000000001 /* WellnessDashboardView.swift */,
 			);
 			path = Dashboard;
 			sourceTree = "<group>";
@@ -427,6 +442,11 @@
 				A1000041000000000000001 /* BlockingService.swift in Sources */,
 				A1000043000000000000001 /* StatisticsService.swift in Sources */,
 				A1000045000000000000001 /* AdService.swift in Sources */,
+				A1000110000000000000001 /* WellnessAnalyticsService.swift in Sources */,
+				A1000112000000000000001 /* WellnessDashboardView.swift in Sources */,
+				A1000114000000000000001 /* FocusSession.swift in Sources */,
+				A1000116000000000000001 /* DigitalEnergyScore.swift in Sources */,
+				A1000118000000000000001 /* WellnessInsight.swift in Sources */,
 				A1000047000000000000001 /* DeviceRepository.swift in Sources */,
 				A1000049000000000000001 /* BlockedSiteRepository.swift in Sources */,
 				A1000051000000000000001 /* TimeLimitRepository.swift in Sources */,
