@@ -50,13 +50,16 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         // Parse notification type and handle accordingly
         if let notificationType = userInfo["type"] as? String {
-            handleNotification(type: notificationType, userInfo: userInfo)
+            Task { @MainActor in
+                await handleNotification(type: notificationType, userInfo: userInfo)
+            }
         }
         
         completionHandler()
     }
     
-    private func handleNotification(type: String, userInfo: [AnyHashable: Any]) {
+    @MainActor
+    private func handleNotification(type: String, userInfo: [AnyHashable: Any]) async {
         switch type {
         case Constants.Notifications.deviceBlocked:
             // Navigate to devices tab
