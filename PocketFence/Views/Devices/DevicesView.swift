@@ -299,7 +299,7 @@ struct DeviceDetailView: View {
         let updatedTimeLimit = timeLimit > 0 ? Int(timeLimit) : nil
         let deviceCopy = device
         
-        Task { @MainActor in
+        Task { @MainActor [updatedName, updatedTimeLimit, deviceCopy] in
             var updated = deviceCopy
             updated.name = updatedName
             updated.dailyTimeLimit = updatedTimeLimit

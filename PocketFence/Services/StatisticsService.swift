@@ -12,7 +12,7 @@ import Observation
 
 /// Service for collecting and managing statistics
 @Observable
-class StatisticsService {
+class StatisticsService: @unchecked Sendable {
     static let shared = StatisticsService()
     
     private let settingsRepo = SettingsRepository.shared
@@ -31,9 +31,9 @@ class StatisticsService {
     func startPeriodicUpdates() {
         // Update statistics every minute
         updateTimer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] _ in
-            guard let self = self else { return }
+            guard let strongSelf = self else { return }
             Task { @MainActor in
-                self.updateStatistics()
+                strongSelf.updateStatistics()
             }
         }
         

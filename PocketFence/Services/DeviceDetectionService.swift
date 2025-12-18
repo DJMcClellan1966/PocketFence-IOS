@@ -66,7 +66,7 @@ class DeviceDetectionService: @unchecked Sendable {
         
         // Scan every 30 seconds
         scanTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
-            Task {
+            Task { [weak self] in
                 await self?.scanForDevices()
             }
         }

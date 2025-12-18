@@ -7,13 +7,13 @@
 //
 
 import Foundation
-import NetworkExtension
+@preconcurrency import NetworkExtension
 import Combine
 import Observation
 
 /// Service for managing Network Extension and traffic filtering
 @Observable
-class NetworkFilterService {
+class NetworkFilterService: @unchecked Sendable {
     static let shared = NetworkFilterService()
     
     private(set) var isVPNActive = false
@@ -124,10 +124,11 @@ class NetworkFilterService {
     
     @objc private func vpnStatusDidChange(_ notification: Notification) {
         Task { [weak self] in
-            guard let self = self else { return }
-            if let manager = try? await self.loadVPNManager() {
+            guard let strongSelf = self else { return }
+            if let manager = try? await strongSelf.loadVPNManager() {
+                let status = manager.connection.status
                 await MainActor.run {
-                    self.updateStatus(from: manager.connection.status)
+                    strongSelf.updateStatus(from: status)
                 }
             }
         }
