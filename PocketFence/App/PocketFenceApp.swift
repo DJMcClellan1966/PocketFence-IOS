@@ -1,9 +1,9 @@
 //
 //  PocketFenceApp.swift
-//  PocketFence
+//  ScreenBalance
 //
 //  Created on 2025
-//  Copyright © 2025 PocketFence. All rights reserved.
+//  Copyright © 2025 ScreenBalance. All rights reserved.
 //
 
 import SwiftUI
@@ -47,6 +47,7 @@ struct PocketFenceApp: App {
         _ = DeviceDetectionService.shared
         _ = BlockingService.shared
         _ = AdService.shared
+        _ = WellnessAnalyticsService.shared  // New wellness service
         
         // Load initial data
         deviceRepo.loadDevices()
@@ -80,6 +81,7 @@ struct PocketFenceApp: App {
             if today > lastResetDay {
                 // New day - reset daily usage
                 deviceRepo.resetDailyTimeUsage()
+                WellnessAnalyticsService.shared.resetDailyStats()  // Reset wellness stats
                 UserDefaults.standard.set(today, forKey: lastResetKey)
             }
         } else {
