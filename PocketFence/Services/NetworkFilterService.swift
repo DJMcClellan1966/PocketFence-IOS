@@ -124,14 +124,10 @@ class NetworkFilterService {
     
     @objc private func vpnStatusDidChange(_ notification: Notification) {
         Task { [weak self] in
-            await MainActor.run {
-                guard let self = self else { return }
-                Task {
-                    if let manager = try? await self.loadVPNManager() {
-                        await MainActor.run {
-                            self.updateStatus(from: manager.connection.status)
-                        }
-                    }
+            guard let self = self else { return }
+            if let manager = try? await self.loadVPNManager() {
+                await MainActor.run {
+                    self.updateStatus(from: manager.connection.status)
                 }
             }
         }
