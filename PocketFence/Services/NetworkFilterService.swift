@@ -124,11 +124,12 @@ class NetworkFilterService: @unchecked Sendable {
     
     @objc private func vpnStatusDidChange(_ notification: Notification) {
         Task { [weak self] in
-            guard let strongSelf = self else { return }
-            if let manager = try? await strongSelf.loadVPNManager() {
+            guard let self else { return }
+            if let manager = try? await self.loadVPNManager() {
+                // Extract the status value before MainActor.run to avoid capturing manager
                 let status = manager.connection.status
-                await MainActor.run {
-                    strongSelf.updateStatus(from: status)
+                await MainActor.run { [weak self] in
+                    self?.updateStatus(from: status)
                 }
             }
         }

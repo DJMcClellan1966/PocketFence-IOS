@@ -31,9 +31,9 @@ class StatisticsService: @unchecked Sendable {
     func startPeriodicUpdates() {
         // Update statistics every minute
         updateTimer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] _ in
-            guard let strongSelf = self else { return }
+            guard let self else { return }
             Task { @MainActor in
-                strongSelf.updateStatistics()
+                self.updateStatistics()
             }
         }
         

@@ -50,11 +50,10 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         
         // Parse notification type and handle accordingly
         if let notificationType = userInfo["type"] as? String {
-            // Create local copies to avoid capturing mutable variables
+            // Extract only the needed String value to avoid capturing non-Sendable dictionary
             let typeCopy = notificationType
-            let userInfoCopy = userInfo
             Task { @MainActor [weak self] in
-                await self?.handleNotification(type: typeCopy, userInfo: userInfoCopy)
+                await self?.handleNotification(type: typeCopy)
             }
         }
         
@@ -62,7 +61,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     }
     
     @MainActor
-    private func handleNotification(type: String, userInfo: [AnyHashable: Any]) async {
+    private func handleNotification(type: String) async {
         switch type {
         case Constants.Notifications.deviceBlocked:
             // Navigate to devices tab
