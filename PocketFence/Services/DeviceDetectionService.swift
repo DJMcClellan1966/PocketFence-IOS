@@ -38,8 +38,9 @@ class DeviceDetectionService: @unchecked Sendable {
     /// Start monitoring network status
     func startNetworkMonitoring() {
         monitor.pathUpdateHandler = { [weak self] path in
+            guard let self else { return }
             DispatchQueue.main.async {
-                self?.handleNetworkPathUpdate(path)
+                self.handleNetworkPathUpdate(path)
             }
         }
         monitor.start(queue: monitorQueue)
@@ -66,8 +67,9 @@ class DeviceDetectionService: @unchecked Sendable {
         
         // Scan every 30 seconds
         scanTimer = Timer.scheduledTimer(withTimeInterval: 30.0, repeats: true) { [weak self] _ in
-            Task { [weak self] in
-                await self?.scanForDevices()
+            guard let self else { return }
+            Task {
+                await self.scanForDevices()
             }
         }
         

@@ -298,14 +298,15 @@ struct DeviceDetailView: View {
         let updatedName = editedName
         let updatedTimeLimit = timeLimit > 0 ? Int(timeLimit) : nil
         let deviceCopy = device
+        let viewModelCopy = viewModel
         
-        Task { @MainActor [updatedName, updatedTimeLimit, deviceCopy] in
+        Task { @MainActor [updatedName, updatedTimeLimit, deviceCopy, viewModelCopy] in
             var updated = deviceCopy
             updated.name = updatedName
             updated.dailyTimeLimit = updatedTimeLimit
             
-            viewModel.updateDeviceName(updated, name: updatedName)
-            viewModel.setTimeLimit(for: updated, minutes: updatedTimeLimit)
+            viewModelCopy.updateDeviceName(updated, name: updatedName)
+            viewModelCopy.setTimeLimit(for: updated, minutes: updatedTimeLimit)
         }
         
         dismiss()
