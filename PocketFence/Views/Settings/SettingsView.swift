@@ -12,7 +12,9 @@ struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
     
     init() {
-        _viewModel = State(wrappedValue: SettingsViewModel())
+        _viewModel = State(wrappedValue: MainActor.assumeIsolated {
+            SettingsViewModel()
+        })
     }
     
     var body: some View {
