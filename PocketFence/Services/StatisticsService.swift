@@ -31,7 +31,9 @@ class StatisticsService {
     func startPeriodicUpdates() {
         // Update statistics every minute
         updateTimer = Timer.scheduledTimer(withTimeInterval: 60.0, repeats: true) { [weak self] _ in
-            self?.updateStatistics()
+            Task { @MainActor in
+                self?.updateStatistics()
+            }
         }
         
         // Initial update

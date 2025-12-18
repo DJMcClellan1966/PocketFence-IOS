@@ -188,7 +188,7 @@ struct BlockedSiteRow: View {
             
             Toggle("", isOn: .constant(site.isEnabled))
                 .labelsHidden()
-                .onChange(of: site.isEnabled) { _ in
+                .onChange(of: site.isEnabled) { oldValue, newValue in
                     viewModel.toggleSiteEnabled(site)
                 }
         }

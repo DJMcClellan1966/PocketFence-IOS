@@ -13,7 +13,7 @@ import Observation
 
 /// Service for detecting devices connected to Personal Hotspot
 @Observable
-class DeviceDetectionService {
+class DeviceDetectionService: @unchecked Sendable {
     static let shared = DeviceDetectionService()
     
     private(set) var detectedDevices: [Device] = []

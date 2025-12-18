@@ -137,7 +137,7 @@ struct QuietHoursRow: View {
             
             Toggle("", isOn: .constant(quietHours.isEnabled))
                 .labelsHidden()
-                .onChange(of: quietHours.isEnabled) { _ in
+                .onChange(of: quietHours.isEnabled) { oldValue, newValue in
                     viewModel.toggleQuietHoursEnabled()
                 }
         }
@@ -192,7 +192,7 @@ struct TimeLimitRow: View {
             
             Toggle("", isOn: .constant(timeLimit.isEnabled))
                 .labelsHidden()
-                .onChange(of: timeLimit.isEnabled) { _ in
+                .onChange(of: timeLimit.isEnabled) { oldValue, newValue in
                     viewModel.toggleTimeLimitEnabled(timeLimit)
                 }
         }

@@ -241,7 +241,7 @@ struct DeviceDetailView: View {
                 
                 Section("Status") {
                     Toggle("Block Device", isOn: .constant(device.isBlocked))
-                        .onChange(of: device.isBlocked) { _ in
+                        .onChange(of: device.isBlocked) { oldValue, newValue in
                             viewModel.toggleDeviceBlock(device)
                         }
                     
@@ -297,9 +297,10 @@ struct DeviceDetailView: View {
         // Create local copies to avoid capturing mutable variables
         let updatedName = editedName
         let updatedTimeLimit = timeLimit > 0 ? Int(timeLimit) : nil
+        let deviceCopy = device
         
         Task { @MainActor in
-            var updated = device
+            var updated = deviceCopy
             updated.name = updatedName
             updated.dailyTimeLimit = updatedTimeLimit
             
