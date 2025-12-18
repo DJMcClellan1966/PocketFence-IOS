@@ -13,7 +13,9 @@ struct DashboardView: View {
     @State private var adService = AdService.shared
     
     init() {
-        _viewModel = State(wrappedValue: DashboardViewModel())
+        _viewModel = State(wrappedValue: MainActor.assumeIsolated {
+            DashboardViewModel()
+        })
     }
     
     var body: some View {

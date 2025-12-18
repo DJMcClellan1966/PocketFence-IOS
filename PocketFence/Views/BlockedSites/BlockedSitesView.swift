@@ -12,7 +12,9 @@ struct BlockedSitesView: View {
     @State private var viewModel: BlockedSitesViewModel
     
     init() {
-        _viewModel = State(wrappedValue: BlockedSitesViewModel())
+        _viewModel = State(wrappedValue: MainActor.assumeIsolated {
+            BlockedSitesViewModel()
+        })
     }
     
     var body: some View {

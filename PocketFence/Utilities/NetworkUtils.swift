@@ -98,12 +98,31 @@ enum NetworkUtils {
     /// Check if device is connected to network
     static func isConnectedToNetwork() -> Bool {
         let monitor = NWPathMonitor()
-        var isConnected = false
         
+        // Use actor-isolated class to safely capture the connection status
+        final class ConnectionState: @unchecked Sendable {
+            private let lock = NSLock()
+            private var _isConnected = false
+            
+            var isConnected: Bool {
+                get {
+                    lock.lock()
+                    defer { lock.unlock() }
+                    return _isConnected
+                }
+                set {
+                    lock.lock()
+                    defer { lock.unlock() }
+                    _isConnected = newValue
+                }
+            }
+        }
+        
+        let state = ConnectionState()
         let semaphore = DispatchSemaphore(value: 0)
         
         monitor.pathUpdateHandler = { path in
-            isConnected = path.status == .satisfied
+            state.isConnected = path.status == .satisfied
             semaphore.signal()
         }
         
@@ -113,7 +132,7 @@ enum NetworkUtils {
         _ = semaphore.wait(timeout: .now() + 1.0)
         monitor.cancel()
         
-        return isConnected
+        return state.isConnected
     }
     
     // MARK: - DNS

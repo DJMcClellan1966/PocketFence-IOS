@@ -12,7 +12,9 @@ struct DevicesView: View {
     @State private var viewModel: DevicesViewModel
     
     init() {
-        _viewModel = State(wrappedValue: DevicesViewModel())
+        _viewModel = State(wrappedValue: MainActor.assumeIsolated {
+            DevicesViewModel()
+        })
     }
     
     var body: some View {
@@ -292,17 +294,17 @@ struct DeviceDetailView: View {
     }
     
     private func saveChanges() {
-        var updated = device
-        updated.name = editedName
-        if timeLimit > 0 {
-            updated.dailyTimeLimit = Int(timeLimit)
-        } else {
-            updated.dailyTimeLimit = nil
-        }
+        // Create local copies to avoid capturing mutable variables
+        let updatedName = editedName
+        let updatedTimeLimit = timeLimit > 0 ? Int(timeLimit) : nil
         
         Task { @MainActor in
-            viewModel.updateDeviceName(updated, name: editedName)
-            viewModel.setTimeLimit(for: updated, minutes: updated.dailyTimeLimit)
+            var updated = device
+            updated.name = updatedName
+            updated.dailyTimeLimit = updatedTimeLimit
+            
+            viewModel.updateDeviceName(updated, name: updatedName)
+            viewModel.setTimeLimit(for: updated, minutes: updatedTimeLimit)
         }
         
         dismiss()
