@@ -16,9 +16,8 @@ struct WellnessDashboardView: View {
     @State private var showInsightsSheet = false
     
     init() {
-        _viewModel = State(wrappedValue: MainActor.assumeIsolated {
-            DashboardViewModel()
-        })
+        // Initialize ViewModel on main actor (safe since SwiftUI views are main actor isolated)
+        _viewModel = State(wrappedValue: DashboardViewModel())
     }
     
     var body: some View {

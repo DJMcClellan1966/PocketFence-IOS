@@ -75,9 +75,7 @@ final class WellnessAnalyticsService {
         distractionsToday += 1
         
         // Update active focus session if exists
-        if activeFocusSession != nil {
-            activeFocusSession?.distractionCount += 1
-        }
+        activeFocusSession?.distractionCount += 1
         
         updateEnergyScore()
     }
@@ -220,8 +218,9 @@ final class WellnessAnalyticsService {
     }
     
     private func startPeriodicUpdates() {
-        // Update every 5 minutes
-        updateTimer = Timer.scheduledTimer(withTimeInterval: 300, repeats: true) { [weak self] _ in
+        // Update every 10 minutes to minimize battery impact
+        // Updates also trigger on user actions (breaks, focus sessions, etc.)
+        updateTimer = Timer.scheduledTimer(withTimeInterval: 600, repeats: true) { [weak self] _ in
             self?.updateEnergyScore()
         }
     }
