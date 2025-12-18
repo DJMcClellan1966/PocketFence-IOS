@@ -35,14 +35,14 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     
     // MARK: - UNUserNotificationCenterDelegate
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
                                willPresent notification: UNNotification,
                                withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         // Show notification even when app is in foreground
         completionHandler([.banner, .sound, .badge])
     }
     
-    func userNotificationCenter(_ center: UNUserNotificationCenter,
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
                                didReceive response: UNNotificationResponse,
                                withCompletionHandler completionHandler: @escaping () -> Void) {
         // Handle notification tap
@@ -97,7 +97,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
     
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Clear badge
-        application.applicationIconBadgeNumber = 0
+        UNUserNotificationCenter.current().setBadgeCount(0)
     }
     
     private func checkForDayChange() {

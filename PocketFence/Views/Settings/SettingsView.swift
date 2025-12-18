@@ -30,17 +30,17 @@ struct SettingsView: View {
                 // General Settings
                 Section("General") {
                     Toggle("Protection Enabled", isOn: .constant(viewModel.isProtectionEnabled))
-                        .onChange(of: viewModel.isProtectionEnabled) { _ in
+                        .onChange(of: viewModel.isProtectionEnabled) { oldValue, newValue in
                             viewModel.toggleProtection()
                         }
                     
                     Toggle("Notifications", isOn: .constant(viewModel.notificationsEnabled))
-                        .onChange(of: viewModel.notificationsEnabled) { _ in
+                        .onChange(of: viewModel.notificationsEnabled) { oldValue, newValue in
                             viewModel.toggleNotifications()
                         }
                     
                     Toggle("Sound Effects", isOn: .constant(viewModel.soundEnabled))
-                        .onChange(of: viewModel.soundEnabled) { _ in
+                        .onChange(of: viewModel.soundEnabled) { oldValue, newValue in
                             viewModel.toggleSound()
                         }
                 }

@@ -104,18 +104,14 @@ class SettingsViewModel {
     }
     
     func restorePurchases() async {
-        do {
-            // In real implementation, use StoreKit 2 to restore
-            // try await AppStore.sync()
-            
-            // For now, check if premium is already set
-            if settingsRepo.settings.isPremium {
-                successMessage = "Premium already active"
-            } else {
-                errorMessage = "No previous purchases found"
-            }
-        } catch {
-            errorMessage = "Restore failed: \(error.localizedDescription)"
+        // In real implementation, use StoreKit 2 to restore
+        // try await AppStore.sync()
+        
+        // For now, check if premium is already set
+        if settingsRepo.settings.isPremium {
+            successMessage = "Premium already active"
+        } else {
+            errorMessage = "No previous purchases found"
         }
     }
     
@@ -177,10 +173,8 @@ class SettingsViewModel {
     
     func contactSupport() {
         let email = "support@pocketfence.app"
-        if let url = URL(string: "mailto:\(email)") {
-            // In real app: UIApplication.shared.open(url)
-            print("Opening email to: \(email)")
-        }
+        // In real app: UIApplication.shared.open(URL(string: "mailto:\(email)")!)
+        print("Opening email to: \(email)")
     }
     
     // MARK: - Computed Properties

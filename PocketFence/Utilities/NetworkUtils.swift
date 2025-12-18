@@ -138,7 +138,7 @@ enum NetworkUtils {
     // MARK: - DNS
     
     /// Perform DNS lookup for a domain
-    static func resolveDNS(for domain: String, completion: @escaping ([String]) -> Void) {
+    static func resolveDNS(for domain: String, completion: @escaping @Sendable ([String]) -> Void) {
         DispatchQueue.global(qos: .utility).async {
             var addresses: [String] = []
             
@@ -168,8 +168,9 @@ enum NetworkUtils {
                 freeaddrinfo(result)
             }
             
+            let capturedAddresses = addresses
             DispatchQueue.main.async {
-                completion(addresses)
+                completion(capturedAddresses)
             }
         }
     }

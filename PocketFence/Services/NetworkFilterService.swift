@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import NetworkExtension
+@preconcurrency import NetworkExtension
 import Combine
 import Observation
 
@@ -123,9 +123,10 @@ class NetworkFilterService {
     }
     
     @objc private func vpnStatusDidChange(_ notification: Notification) {
-        Task { @MainActor in
-            if let manager = try? await loadVPNManager() {
-                updateStatus(from: manager.connection.status)
+        Task { [weak self] @MainActor in
+            guard let self = self else { return }
+            if let manager = try? await self.loadVPNManager() {
+                self.updateStatus(from: manager.connection.status)
             }
         }
     }
