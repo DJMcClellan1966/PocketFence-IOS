@@ -12,7 +12,9 @@ struct TimeLimitsView: View {
     @State private var viewModel: TimeLimitsViewModel
     
     init() {
-        _viewModel = State(wrappedValue: TimeLimitsViewModel())
+        _viewModel = State(wrappedValue: MainActor.assumeIsolated {
+            TimeLimitsViewModel()
+        })
     }
     
     var body: some View {
